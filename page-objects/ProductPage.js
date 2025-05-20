@@ -1,0 +1,8 @@
+class ProductPage{
+
+    constructor (page) {
+
+        
+
+    }
+}
