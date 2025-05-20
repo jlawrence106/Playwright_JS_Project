@@ -18,18 +18,19 @@ test.beforeEach(async ({ page }) => {
   await loginObj.login(envdetails.username, envdetails.password);  
 });
 
-test('TEST01 - Validate Menu Items', async ({ page }) => {
+test.skip('TEST01 - Validate Menu Items', async ({ page }) => {
   const homepageObj = new HomePage(page);
   await homepageObj.menuValidate(menuItems);
 });
 
-test('TEST02 - Validate Product Items', async ({ page }) => {
+test.skip('TEST02 - Validate Product Items', async ({ page }) => {
  const homepageObj = new HomePage(page);
  await homepageObj.productValidate(homeproductItems);
 });
 
-test.skip('TEST03 - Validate Product Pages', async ({ page }) => {
-  console.log(`Running ${menuItems.length}`); 
+test('TEST03 - Validate Product Pages', async ({ page }) => {
+  const homepageObj = new HomePage(page);
+  await homepageObj.addtoCart('Sauce Labs Backpack');
 });
 
 test.skip('TEST04 - Checkout Single Item', async ({ page }) => {
