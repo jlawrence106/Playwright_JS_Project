@@ -25,12 +25,12 @@ test.describe('JIRA01 - Saucetest Smoke Test Validations', () => {
     await loginObj.login(envdetails.username, envdetails.password);  
   });
 
-  test.skip('TEST01 - Validate Menu Items', async ({ page }) => {
+  test('TEST01 - Validate Menu Items', async ({ page }) => {
     const homepageObj = new HomePage(page);
     await homepageObj.menuValidate(menuItems);
   });
 
-  test.skip('TEST02 - Validate Product Items', async ({ page }) => {
+  test('TEST02 - Validate Product Items', async ({ page }) => {
   const homepageObj = new HomePage(page);
   await homepageObj.productValidate(homeproductItems);
   });
@@ -44,31 +44,38 @@ test.describe('JIRA01 - Saucetest Smoke Test Validations', () => {
     //Product Page
     const productpageObj = new ProductPage(page);
     await productpageObj.validatepageDetails(homeproductItems[0]);
-    await productpageObj.addCart();
-    await productpageObj.navigateCart();
-
-    //Your Cart Page
-    const yourcartObj = new MycartPage(page);
-    await yourcartObj.checkout();
-
-    //Check Out Info Page
-    const yourinfoObj = new CheckoutinfoPage(page);
-    await yourinfoObj.submitContinue(custdetails[0]);
-    
-    //Check Out Overview
-    const youroverviewObj = new CheckoutoverviewPage(page);
-
-    //Validate Order Price, Tax and Total
-    await youroverviewObj.checkpriceoneproduct(homeproductItems[0]);
-    await youroverviewObj.completeorder();
-    ;
-    //Check Out Confirmation
-    const orderconfirmObj = new CheckoutcompletePage(page);
-    await orderconfirmObj.backhomepage();
   });
 
-test.skip('TEST04 - End-to-end Checkout Single Item', async ({ page }) => {
-  console.log(`Running ${test.info().title}`);
+test('TEST04 - End-to-end Checkout Single Item', async ({ page }) => {
+  //Home Page
+  const homepageObj = new HomePage(page);
+  await homepageObj.openProduct(homeproductItems[0].productname);
+  
+  //Product Page
+  const productpageObj = new ProductPage(page);
+  await productpageObj.validatepageDetails(homeproductItems[0]);
+  await productpageObj.addCart();
+  await productpageObj.navigateCart();
+
+  //Your Cart Page
+  const yourcartObj = new MycartPage(page);
+  await yourcartObj.checkout();
+
+  //Check Out Info Page
+  const yourinfoObj = new CheckoutinfoPage(page);
+  await yourinfoObj.submitContinue(custdetails[0]);
+  
+  //Check Out Overview
+  const youroverviewObj = new CheckoutoverviewPage(page);
+
+  //Validate Order Price, Tax and Total
+  await youroverviewObj.checkpriceoneproduct(homeproductItems[0]);
+  await youroverviewObj.completeorder();
+  ;
+  //Check Out Confirmation
+  const orderconfirmObj = new CheckoutcompletePage(page);
+  await orderconfirmObj.backhomepage();
+
 });
 
 test.skip('TEST05 - End-to-end Checkout Multiple Item', async ({ page }) => {
