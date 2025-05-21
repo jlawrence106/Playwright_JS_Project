@@ -1,9 +1,9 @@
-const { expect } = require("playwright/test");
+import { test, expect } from '@playwright/test';
 
 class ProductPage{
 
     constructor (page) {
-
+        this.page = page;
         this.itemname = page.locator('[data-test=inventory-item-name]');
         this.itemdesc = page.locator('[data-test=inventory-item-desc]');
         this.itemprice = page.locator('[data-test=inventory-item-price]');
@@ -22,14 +22,14 @@ class ProductPage{
 
     }
 
-    async addtocart () {
+    async addCart () {
         await this.addtocart.click();
         expect(await this.remove).toBeVisible();
     }
 
-    async navigatetoCart() {
+    async navigateCart() {
         await this.carticon.click();
-        expect(await this.page.getByText('Your Cart')).toBeVisible;
+        expect(await this.page.locator('[data-test=title]').textContent()).toBe('Your Cart');
     }
 }
 

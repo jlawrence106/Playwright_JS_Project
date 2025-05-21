@@ -1,7 +1,7 @@
 import { Page } from "@playwright/test"; 
 import { test, expect } from '@playwright/test';
 
-class YourcartPage{
+class MycartPage{
 
     constructor(page) {
         this.page = page;
@@ -13,14 +13,14 @@ class YourcartPage{
     }
 
     async validatepage (itemdetails) {
-
+    
     }
 
     async checkout () {
         await this.checkoutBtn.click();
-        expect(await this.page.getbytext('Checkout: Your Information')).toBeVisible();
+        expect(await this.page.locator('[data-test=title]').textContent()).toBe('Checkout: Your Information');
     }
 
 }
 
-module.exports = {YourcartPage}
+module.exports = {MycartPage}
