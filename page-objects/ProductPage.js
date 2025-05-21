@@ -15,9 +15,9 @@ class ProductPage{
     }
 
     async validatepageDetails(itemdetails) {
-        expect(await this.itemname.textContent()).toBe(itemdetails.name);
+        expect(await this.itemname.textContent()).toBe(itemdetails.productname);
        // expect(await this.itemdesc.textContent()).toBe(itemdetails.desc);
-        expect(await this.itemprice.textContent()).toBe(itemdetails.price);
+        expect(await this.itemprice.textContent()).toBe(itemdetails.productprice);
         expect(await this.carticon).toBeVisible();
 
     }

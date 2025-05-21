@@ -12,6 +12,7 @@ import {CheckoutcompletePage} from '../page-objects/CheckoutcompletePage';
 const envdetails = JSON.parse(JSON.stringify(require("../data-json/env-config.json")));
 const menuItems = JSON.parse(JSON.stringify(require("../data-json/menu-item.json")));
 const homeproductItems = JSON.parse(JSON.stringify(require("../data-json/home-products.json")));
+const custdetails = JSON.parse(JSON.stringify(require("../data-json/cust-details.json")));
 
 
 test.describe('JIRA01 - Saucetest Smoke Test Validations', () => {
@@ -36,18 +37,13 @@ test.describe('JIRA01 - Saucetest Smoke Test Validations', () => {
 
   test('TEST03 - Validate Product Pages', async ({ page }) => {
     
-    const itemdetails = {
-      "name": "Sauce Labs Backpack",
-      "price": "$29.99",
-      "desc": "New York"
-    };
     //Home Page
     const homepageObj = new HomePage(page);
-    await homepageObj.openProduct(itemdetails.name);
+    await homepageObj.openProduct(homeproductItems[0].productname);
     
     //Product Page
     const productpageObj = new ProductPage(page);
-    await productpageObj.validatepageDetails(itemdetails);
+    await productpageObj.validatepageDetails(homeproductItems[0]);
     await productpageObj.addCart();
     await productpageObj.navigateCart();
 
@@ -55,18 +51,15 @@ test.describe('JIRA01 - Saucetest Smoke Test Validations', () => {
     const yourcartObj = new MycartPage(page);
     await yourcartObj.checkout();
 
-    const cusdetails = {
-      "fname": "FTest",
-      "lname": "LTest",
-      "zipcode": "234"
-    };
-
     //Check Out Info Page
     const yourinfoObj = new CheckoutinfoPage(page);
-    await yourinfoObj.submitContinue(cusdetails);
+    await yourinfoObj.submitContinue(custdetails[0]);
     
     //Check Out Overview
     const youroverviewObj = new CheckoutoverviewPage(page);
+
+    //Validate Order Price, Tax and Total
+    await youroverviewObj.checkpriceoneproduct(homeproductItems[0]);
     await youroverviewObj.completeorder();
     ;
     //Check Out Confirmation

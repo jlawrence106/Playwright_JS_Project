@@ -1,5 +1,6 @@
 import { Page } from "@playwright/test"; 
 import { test, expect } from '@playwright/test';
+import * as utils from '../utils/commonUtils';
 
 class CheckoutoverviewPage {
 
@@ -14,6 +15,17 @@ class CheckoutoverviewPage {
         this.tax = page.locator('[data-test=tax-label]');
         this.total = page.locator('[data-test="total-label"]');
         this.finish = page.locator('#finish');
+    }
+
+    async checkpriceoneproduct (itemdetails) {
+
+        const taxvalue = utils.getTaxCalc(itemdetails.productprice);
+        const totalprice = utils.sumDollarValues([itemdetails.productprice,taxvalue]);
+        expect(await this.itemname.textContent()).toBe(itemdetails.productname);
+        expect(await this.price.textContent()).toBe(itemdetails.productprice);
+        expect(await this.tax.textContent()).toBe('Tax: ' + taxvalue);
+        expect(await this.total.textContent()).toBe('Total: ' + totalprice);
+        
     }
 
     async completeorder () {
