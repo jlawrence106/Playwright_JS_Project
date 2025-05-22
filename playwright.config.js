@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test';
+import { config } from 'dotenv';
 
 /**
  * Read environment variables from file.
@@ -8,6 +9,20 @@ import { defineConfig, devices } from '@playwright/test';
 // import dotenv from 'dotenv';
 // import path from 'path';
 // dotenv.config({ path: path.resolve(__dirname, '.env') });
+
+if (process.env.ENVIRONMENT)
+{
+  config({
+    path: `.env.${process.env.ENVIRONMENT}`,
+    override: true
+  });
+  console.log(`Reading ${process.env.ENVIRONMENT}`);
+}
+else {
+  config();
+ // console.log('Reading SIT');
+}
+
 
 /**
  * @see https://playwright.dev/docs/test-configuration

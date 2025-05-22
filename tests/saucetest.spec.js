@@ -1,3 +1,5 @@
+//RUN TEST $env:ENVIRONMENT="uat"; npx playwright test --debug
+
 //Import Packages
 import { test, expect } from '@playwright/test';
 import {LoginPage} from '../pages/LoginPage';
@@ -8,9 +10,9 @@ import {CheckoutinfoPage} from '../pages/CheckoutinfoPage';
 import {CheckoutoverviewPage} from '../pages/CheckoutoverviewPage';
 import {CheckoutcompletePage} from '../pages/CheckoutcompletePage';
 import * as utils from '../utils/commonUtils';
+import * as envdetails from '../env-config/envdetails';
 
 //Import Data
-const envdetails = JSON.parse(JSON.stringify(require("../env-config.json")));
 const menuItems = JSON.parse(JSON.stringify(require("../test-data/menu-item.json")));
 const homeproductItems = JSON.parse(JSON.stringify(require("../test-data/home-products.json")));
 const custdetails = JSON.parse(JSON.stringify(require("../test-data/cust-details.json")));
@@ -21,9 +23,9 @@ test.describe('JIRA01 - Saucetest Smoke Test Validations', () => {
 
   test.beforeEach(async ({ page }) => {
     console.log(`Running ${test.info().title}`);
-    await page.goto(envdetails.url);
+    await page.goto(envdetails.baseurl());
     const loginObj = new LoginPage(page);
-    await loginObj.login(envdetails.username, envdetails.password);  
+    await loginObj.login(envdetails.username(), envdetails.password());  
   });
 
   test('TEST01 - Validate Menu Items', async ({ page }) => {
@@ -85,7 +87,7 @@ test(`TEST04 - End-to-end Checkout Single Item - ${product.productname}`, async 
 
 test('TEST05 - End-to-end Checkout Multiple Item', async ({ page }) => {
   
-  const rndindex = utils.getRndIndex(homeproductItems);
+  let rndindex = utils.getRndIndex(homeproductItems);
 
   if (rndindex == 0) {
     rndindex++;
@@ -124,7 +126,7 @@ test('TEST05 - End-to-end Checkout Multiple Item', async ({ page }) => {
   //Validate Order Price, Tax and Total
   await youroverviewObj.checkpricemultiproduct(homeproductItems, rndindex);
   await youroverviewObj.completeorder();
-  ;
+  await page.screenshot({ path: `test-screenshots/confirmpage_${utils.getNow()}.png` });
   //Check Out Confirmation
   const orderconfirmObj = new CheckoutcompletePage(page);
   await orderconfirmObj.backhomepage();
