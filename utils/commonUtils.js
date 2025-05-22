@@ -15,3 +15,12 @@ export function getTaxCalc(value) {
     
       return '$' + tax.toFixed(2);
   }
+
+  // Random Index
+export function getRndIndex(values) {
+    const randomIndex = Math.floor(Math.random() * values.length);
+    
+      return randomIndex;
+  }
+  
+

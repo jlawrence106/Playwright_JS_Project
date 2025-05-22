@@ -1,18 +1,19 @@
 //Import Packages
 import { test, expect } from '@playwright/test';
-import {LoginPage} from '../page-objects/LoginPage';
-import {HomePage} from '../page-objects/HomePage';
-import {MycartPage} from '../page-objects/MycartPage';
-import {ProductPage} from '../page-objects/ProductPage';
-import {CheckoutinfoPage} from '../page-objects/CheckoutinfoPage';
-import {CheckoutoverviewPage} from '../page-objects/CheckoutoverviewPage';
-import {CheckoutcompletePage} from '../page-objects/CheckoutcompletePage';
+import {LoginPage} from '../pages/LoginPage';
+import {HomePage} from '../pages/HomePage';
+import {MycartPage} from '../pages/MycartPage';
+import {ProductPage} from '../pages/ProductPage';
+import {CheckoutinfoPage} from '../pages/CheckoutinfoPage';
+import {CheckoutoverviewPage} from '../pages/CheckoutoverviewPage';
+import {CheckoutcompletePage} from '../pages/CheckoutcompletePage';
+import * as utils from '../utils/commonUtils';
 
 //Import Data
-const envdetails = JSON.parse(JSON.stringify(require("../data-json/env-config.json")));
-const menuItems = JSON.parse(JSON.stringify(require("../data-json/menu-item.json")));
-const homeproductItems = JSON.parse(JSON.stringify(require("../data-json/home-products.json")));
-const custdetails = JSON.parse(JSON.stringify(require("../data-json/cust-details.json")));
+const envdetails = JSON.parse(JSON.stringify(require("../env-config.json")));
+const menuItems = JSON.parse(JSON.stringify(require("../test-data/menu-item.json")));
+const homeproductItems = JSON.parse(JSON.stringify(require("../test-data/home-products.json")));
+const custdetails = JSON.parse(JSON.stringify(require("../test-data/cust-details.json")));
 
 
 test.describe('JIRA01 - Saucetest Smoke Test Validations', () => {
@@ -46,14 +47,16 @@ test.describe('JIRA01 - Saucetest Smoke Test Validations', () => {
     await productpageObj.validatepageDetails(homeproductItems[0]);
   });
 
-test('TEST04 - End-to-end Checkout Single Item', async ({ page }) => {
+  for (const product of homeproductItems) {
+
+test(`TEST04 - End-to-end Checkout Single Item - ${product.productname}`, async ({ page }) => {
   //Home Page
   const homepageObj = new HomePage(page);
-  await homepageObj.openProduct(homeproductItems[0].productname);
+  await homepageObj.openProduct(product.productname);
   
   //Product Page
   const productpageObj = new ProductPage(page);
-  await productpageObj.validatepageDetails(homeproductItems[0]);
+  await productpageObj.validatepageDetails(product);
   await productpageObj.addCart();
   await productpageObj.navigateCart();
 
@@ -69,7 +72,7 @@ test('TEST04 - End-to-end Checkout Single Item', async ({ page }) => {
   const youroverviewObj = new CheckoutoverviewPage(page);
 
   //Validate Order Price, Tax and Total
-  await youroverviewObj.checkpriceoneproduct(homeproductItems[0]);
+  await youroverviewObj.checkpriceoneproduct(product);
   await youroverviewObj.completeorder();
   ;
   //Check Out Confirmation
@@ -78,8 +81,54 @@ test('TEST04 - End-to-end Checkout Single Item', async ({ page }) => {
 
 });
 
-test.skip('TEST05 - End-to-end Checkout Multiple Item', async ({ page }) => {
-  console.log(`Running ${test.info().title}`);
+}
+
+test('TEST05 - End-to-end Checkout Multiple Item', async ({ page }) => {
+  
+  const rndindex = utils.getRndIndex(homeproductItems);
+
+  if (rndindex == 0) {
+    rndindex++;
+  }
+
+  console.log(`Random Index ${rndindex}`);
+
+  const homepageObj = new HomePage(page);
+  const productpageObj = new ProductPage(page);
+
+  for (let i=0; i < rndindex; i++){
+  
+  await homepageObj.openProduct(homeproductItems[i].productname);
+  
+  //Product Page
+  
+  await productpageObj.validatepageDetails(homeproductItems[i]);
+  await productpageObj.addCart();
+  await productpageObj.backtohome();
+
+  }
+  
+  await productpageObj.navigateCart();
+
+  //Your Cart Page
+  const yourcartObj = new MycartPage(page);
+  await yourcartObj.checkout();
+
+  //Check Out Info Page
+  const yourinfoObj = new CheckoutinfoPage(page);
+  await yourinfoObj.submitContinue(custdetails[0]);
+  
+  //Check Out Overview
+  const youroverviewObj = new CheckoutoverviewPage(page);
+
+  //Validate Order Price, Tax and Total
+  await youroverviewObj.checkpricemultiproduct(homeproductItems, rndindex);
+  await youroverviewObj.completeorder();
+  ;
+  //Check Out Confirmation
+  const orderconfirmObj = new CheckoutcompletePage(page);
+  await orderconfirmObj.backhomepage();
+
 });
 
 });

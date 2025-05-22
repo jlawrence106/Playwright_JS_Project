@@ -11,6 +11,7 @@ class ProductPage{
         this.remove = page.locator('#remove');
         this.carticon = page.locator('.shopping_cart_link');
         this.cartbadge = page.locator('[data-test=shopping-cart-badge]');
+        this.backhome = page.locator('#back-to-products');
 
     }
 
@@ -30,6 +31,11 @@ class ProductPage{
     async navigateCart() {
         await this.carticon.click();
         expect(await this.page.locator('[data-test=title]').textContent()).toBe('Your Cart');
+    }
+
+    async backtohome() {
+        await this.backhome.click();
+        expect(this.page.getByText('Products')).toBeVisible();
     }
 }
 
